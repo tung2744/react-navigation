@@ -19,10 +19,6 @@ const MyNavScreen = ({ navigation, banner }) => (
       onPress={() => navigation.navigate('Profile', { name: 'Jane' })}
       title="Go to a profile screen"
     />
-    <Button
-      onPress={() => navigation.goBack(null)}
-      title="Go back"
-    />
   </ScrollView>
 );
 
@@ -33,7 +29,12 @@ const MyHomeScreen = ({ navigation }) => (
   />
 );
 MyHomeScreen.navigationOptions = {
-  title: 'Welcome',
+  header: {
+    title: 'Welcome Welcome Welcome Welcome Welcome Welcome',
+    titleStyle: {
+      backgroundColor: 'red',
+    },
+  },
 };
 
 const MyPhotosScreen = ({ navigation }) => (
@@ -56,16 +57,18 @@ const MyProfileScreen = ({ navigation }) => (
   />
 );
 MyProfileScreen.navigationOptions = {
-  header: ({ state, setParams }) => ({
-    title: `${state.params.name}'s Profile!`,
-    tintColor: '#007AFF',
-    // Render a button on the right side of the header.
-    // When pressed switches the screen to edit mode.
-    right: (
-      <Button
-        title={state.params.mode === 'edit' ? 'Done' : 'Edit'}
-        onPress={() => setParams({ mode: state.params.mode === 'edit' ? '' : 'edit' })}
-      />
+  header: ({ state, setParams, goBack}) => ({
+    title: 'Profile',
+    titleStyle: {
+      titleStyle: {
+        backgroundColor: 'blue',
+      },
+    },
+    left: (
+        <Button
+          title="Back"
+          onPress={() => goBack()}
+        />
     ),
   }),
 };
