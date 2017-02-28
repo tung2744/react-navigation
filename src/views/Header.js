@@ -241,9 +241,6 @@ class Header extends React.PureComponent<void, HeaderProps, HeaderState> {
         onLayout={onLayoutIOS}
         key={`${name}_${key}`}
         style={[
-          titleWidth && {
-            width: (props.layout.initWidth - titleWidth) / 2,
-          },
           styles.item,
           styles[name],
           styleInterpolator(props),
