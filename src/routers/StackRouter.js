@@ -113,9 +113,10 @@ export default (
             params: initialRouteParams,
           }));
         }
-        const params = (route.params || action.params) && {
+        const params = (route.params || action.params || initialRouteParams) && {
           ...(route.params || {}),
           ...(action.params || {}),
+          ...(initialRouteParams || {}),
         };
         route = {
           ...route,
