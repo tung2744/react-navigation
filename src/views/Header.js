@@ -133,6 +133,14 @@ class Header extends React.PureComponent<void, HeaderProps, HeaderState> {
     return undefined;
   }
 
+  _getHeaderStyleInterpolator(navigation: Navigation): NavigationStyleInterpolator {
+    const header = this.props.router.getScreenConfig(navigation, 'header');
+    if (header && header.styleInterpolator) {
+      return header.styleInterpolator;
+    }
+    return HeaderStyleInterpolator;
+  }
+
   _renderTitleComponent = (props: SubViewProps) => {
     const titleStyle = this._getHeaderTitleStyle(props.navigation);
     const color = this._getHeaderTintColor(props.navigation);
@@ -168,35 +176,38 @@ class Header extends React.PureComponent<void, HeaderProps, HeaderState> {
   _renderRightComponent = () => null;
 
   _renderLeft(props: NavigationSceneRendererProps): ?React.Element<*> {
+    const styleInterpolator = this._getHeaderStyleInterpolator(props.navigation);
     return this._renderSubView(
       props,
       'left',
       this.props.renderLeftComponent,
       this._renderLeftComponent,
       this._getHeaderLeftStyle(props.navigation),
-      HeaderStyleInterpolator.forLeft,
+      styleInterpolator.forLeft,
     );
   }
 
   _renderTitle(props: NavigationSceneRendererProps): ?React.Element<*> {
+    const styleInterpolator = this._getHeaderStyleInterpolator(props.navigation);
     return this._renderSubView(
       props,
       'title',
       this.props.renderTitleComponent,
       this._renderTitleComponent,
       this._getHeaderTitleStyle(props.navigation),
-      HeaderStyleInterpolator.forCenter,
+      styleInterpolator.forCenter,
     );
   }
 
   _renderRight(props: NavigationSceneRendererProps): ?React.Element<*> {
+    const styleInterpolator = this._getHeaderStyleInterpolator(props.navigation);
     return this._renderSubView(
       props,
       'right',
       this.props.renderRightComponent,
       this._renderRightComponent,
       this._getHeaderRightStyle(props.navigation),
-      HeaderStyleInterpolator.forRight,
+      styleInterpolator.forRight,
     );
   }
 
