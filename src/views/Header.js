@@ -109,10 +109,26 @@ class Header extends React.PureComponent<void, HeaderProps, HeaderState> {
     return undefined;
   }
 
+  _getHeaderLeftStyle(navigation: Navigation): Style {
+    const header = this.props.router.getScreenConfig(navigation, 'header');
+    if (header && header.leftStyle) {
+      return header.leftStyle;
+    }
+    return undefined;
+  }
+
   _getHeaderTitleStyle(navigation: Navigation): Style {
     const header = this.props.router.getScreenConfig(navigation, 'header');
     if (header && header.titleStyle) {
       return header.titleStyle;
+    }
+    return undefined;
+  }
+
+  _getHeaderRightStyle(navigation: Navigation): Style {
+    const header = this.props.router.getScreenConfig(navigation, 'header');
+    if (header && header.rightStyle) {
+      return header.rightStyle;
     }
     return undefined;
   }
@@ -157,6 +173,7 @@ class Header extends React.PureComponent<void, HeaderProps, HeaderState> {
       'left',
       this.props.renderLeftComponent,
       this._renderLeftComponent,
+      this._getHeaderLeftStyle(props.navigation),
       HeaderStyleInterpolator.forLeft,
     );
   }
@@ -167,6 +184,7 @@ class Header extends React.PureComponent<void, HeaderProps, HeaderState> {
       'title',
       this.props.renderTitleComponent,
       this._renderTitleComponent,
+      this._getHeaderTitleStyle(props.navigation),
       HeaderStyleInterpolator.forCenter,
     );
   }
@@ -177,6 +195,7 @@ class Header extends React.PureComponent<void, HeaderProps, HeaderState> {
       'right',
       this.props.renderRightComponent,
       this._renderRightComponent,
+      this._getHeaderRightStyle(props.navigation),
       HeaderStyleInterpolator.forRight,
     );
   }
@@ -186,6 +205,7 @@ class Header extends React.PureComponent<void, HeaderProps, HeaderState> {
     name: SubViewName,
     renderer: SubViewRenderer,
     defaultRenderer: SubViewRenderer,
+    style: Style,
     styleInterpolator: NavigationStyleInterpolator,
   ): ?React.Element<*> {
     const {
@@ -244,6 +264,7 @@ class Header extends React.PureComponent<void, HeaderProps, HeaderState> {
           styles.item,
           styles[name],
           styleInterpolator(props),
+          style,
         ]}
       >
         {subView}
