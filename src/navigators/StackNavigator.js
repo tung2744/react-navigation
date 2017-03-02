@@ -30,6 +30,7 @@ export default (routeConfigMap: NavigationRouteConfigMap, stackConfig: StackNavi
     cardStyle,
     onTransitionStart,
     onTransitionEnd,
+    onPanResponderRelease,
     navigationOptions,
     transitionConfig,
   } = stackConfig;
@@ -50,6 +51,7 @@ export default (routeConfigMap: NavigationRouteConfigMap, stackConfig: StackNavi
       cardStyle={cardStyle}
       onTransitionStart={onTransitionStart}
       onTransitionEnd={onTransitionEnd}
+      onPanResponderRelease={onPanResponderRelease}
     />
   )), containerOptions);
 };

@@ -218,6 +218,9 @@ class CardStackPanResponder extends AbstractPanResponder {
         this._reset(velocity);
       }
     });
+
+    props.onPanResponderRelease &&
+    props.onPanResponderRelease();
   }
 
   onPanResponderTerminate(): void {

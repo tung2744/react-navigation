@@ -359,6 +359,7 @@ class CardStack extends Component<DefaultProps, Props, void> {
         ...props,
         onNavigateBack,
         gestureResponseDistance: this.props.gestureResponseDistance,
+        onPanResponderRelease: this.props.onPanResponderRelease,
       };
       panHandlers = isModal ?
         CardStackPanResponder.forVertical(panHandlersProps) :
