@@ -141,6 +141,11 @@ class CardStack extends Component<DefaultProps, Props, void> {
     headerComponent: Header,
   };
 
+  constructor(...args) {
+    super(...args);
+    this._panHandlerMap = {};
+  }
+
   componentWillMount() {
     this._render = this._render.bind(this);
     this._renderScene = this._renderScene.bind(this);
@@ -335,8 +340,6 @@ class CardStack extends Component<DefaultProps, Props, void> {
     const { screenInterpolator } = this._getTransitionConfig();
     const style = screenInterpolator && screenInterpolator(props);
 
-    let panHandlers = null;
-
     const cardStackConfig = this.props.router.getScreenConfig(
       props.navigation,
       'cardStack'
@@ -348,7 +351,7 @@ class CardStack extends Component<DefaultProps, Props, void> {
     const gesturesEnabled = typeof gesturesEnabledConfig === 'boolean' ?
       gesturesEnabledConfig :
       Platform.OS === 'ios';
-    if (gesturesEnabled) {
+    if (gesturesEnabled && !this._panHandlerMap[props.scene.key]) {
       let onNavigateBack = null;
       if (this.props.navigation.state.index !== 0) {
         onNavigateBack = () => this.props.navigation.dispatch(
@@ -361,10 +364,14 @@ class CardStack extends Component<DefaultProps, Props, void> {
         gestureResponseDistance: this.props.gestureResponseDistance,
         onPanResponderRelease: this.props.onPanResponderRelease,
       };
-      panHandlers = isModal ?
+      this._panHandlerMap[props.scene.key] = (
+        isModal ?
         CardStackPanResponder.forVertical(panHandlersProps) :
-        CardStackPanResponder.forHorizontal(panHandlersProps);
+        CardStackPanResponder.forHorizontal(panHandlersProps)
+      );
     }
+
+    const panHandlers = this._panHandlerMap[props.scene.key] || null;
 
     const SceneComponent = this.props.router.getComponentForRouteName(props.scene.route.routeName);
 
