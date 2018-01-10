@@ -109,12 +109,22 @@ export type DeprecatedNavigationUriAction = {|
   uri: string,
 |};
 
+export type NavigationTransitionStartAction = {|
+  type: 'Navigation/TRANSITION_START',
+|};
+
+export type NavigationTransitionEndAction = {|
+  type: 'Navigation/TRANSITION_END',
+|};
+
 export type NavigationAction =
   | NavigationInitAction
   | NavigationNavigateAction
   | NavigationBackAction
   | NavigationSetParamsAction
-  | NavigationResetAction;
+  | NavigationResetAction
+  | NavigationTransitionStartAction
+  | NavigationTransitionEndAction;
 
 export type DeprecatedNavigationAction =
   | DeprecatedNavigationInitAction

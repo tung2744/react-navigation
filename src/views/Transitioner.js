@@ -6,6 +6,7 @@ import { Animated, Easing, StyleSheet, View } from 'react-native';
 
 import invariant from '../utils/invariant';
 
+import NavigationActions from '../NavigationActions';
 import NavigationScenesReducer from './ScenesReducer';
 
 import type {
@@ -172,6 +173,7 @@ class Transitioner extends React.Component<Props, State> {
 
     // update scenes and play the transition
     this._isTransitionRunning = true;
+    this.props.navigation.dispatch(NavigationActions.transitionStart());
     this.setState(nextState, async () => {
       if (nextProps.onTransitionStart) {
         const result = nextProps.onTransitionStart(
@@ -236,6 +238,7 @@ class Transitioner extends React.Component<Props, State> {
 
     this._transitionProps = buildTransitionProps(this.props, nextState);
 
+    this.props.navigation.dispatch(NavigationActions.transitionEnd());
     this.setState(nextState, async () => {
       if (this.props.onTransitionEnd) {
         const result = this.props.onTransitionEnd(
