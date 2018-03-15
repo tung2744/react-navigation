@@ -39,6 +39,48 @@ function isEmpty(obj: ?Object): boolean {
   return true;
 }
 
+function nestedSetParams(
+  state: NavigationState,
+  key: string,
+  params: Object
+): NavigationState {
+  let matchedRoute = StateUtils.get(state, key);
+  if (matchedRoute) {
+    const newParams = {
+      ...matchedRoute.params,
+      ...params,
+    }
+    const routes = [...state.routes];
+    routes[state.routes.indexOf(matchedRoute)] = {
+      ...matchedRoute,
+      params: newParams,
+    };
+    return {
+      ...state,
+      routes,
+    };
+  } else {
+    for(let route of state.routes) {
+      if (!route.routes) {
+        continue;
+      }
+      const newRoute = nestedSetParams(route, key, params);
+      if (newRoute !== route) {
+        const routes = [...state.routes];
+        routes[state.routes.indexOf(route)] = {
+          ...newRoute,
+        };
+        return {
+          ...state,
+          routes,
+        }
+      }
+    }
+
+    return state;
+  }
+}
+
 export default (
   routeConfigs: NavigationRouteConfigMap,
   stackConfig: NavigationStackRouterConfig = {}
@@ -234,24 +276,13 @@ export default (
       }
 
       if (action.type === NavigationActions.SET_PARAMS) {
-        const key = action.key;
-        const lastRoute = state.routes.find(
-          (route: NavigationRoute) => route.key === key
+        const newSetParamsState = nestedSetParams(
+          state,
+          action.key,
+          action.params
         );
-        if (lastRoute) {
-          const params = {
-            ...lastRoute.params,
-            ...action.params,
-          };
-          const routes = [...state.routes];
-          routes[state.routes.indexOf(lastRoute)] = {
-            ...lastRoute,
-            params,
-          };
-          return {
-            ...state,
-            routes,
-          };
+        if (newSetParamsState !== state) {
+          return newSetParamsState;
         }
       }
 
