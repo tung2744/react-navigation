@@ -14,6 +14,9 @@ import withOrientation from './withOrientation';
 // See https://mydevice.io/devices/ for device dimensions
 const X_WIDTH = 375;
 const X_HEIGHT = 812;
+// Same width height for XR
+const X_MAX_WIDTH = 414;
+const X_MAX_HEIGHT = 896;
 const PAD_WIDTH = 768;
 const PAD_HEIGHT = 1024;
 
@@ -36,8 +39,18 @@ const isIPhoneX = (() => {
   );
 })();
 
+const isIPhoneXMax = (() => {
+  if (Platform.OS === 'web') return false;
+
+  return (
+    Platform.OS === 'ios' &&
+    ((D_HEIGHT === X_MAX_HEIGHT && D_WIDTH === X_MAX_WIDTH) ||
+      (D_HEIGHT === X_MAX_WIDTH && D_WIDTH === X_MAX_HEIGHT))
+  );
+})();
+
 const isIPad = (() => {
-  if (Platform.OS !== 'ios' || isIPhoneX) return false;
+  if (Platform.OS !== 'ios' || isIPhoneX || isIPhoneXMax) return false;
 
   // if portrait and width is smaller than iPad width
   if (D_HEIGHT > D_WIDTH && D_WIDTH < PAD_WIDTH) {
@@ -53,7 +66,7 @@ const isIPad = (() => {
 })();
 
 const statusBarHeight = isLandscape => {
-  if (isIPhoneX) {
+  if (isIPhoneX || isIPhoneXMax) {
     return isLandscape ? 0 : 44;
   }
 
@@ -282,14 +295,14 @@ class SafeView extends Component {
       case 'horizontal':
       case 'right':
       case 'left': {
-        return isLandscape ? (isIPhoneX ? 44 : 0) : 0;
+        return isLandscape ? ((isIPhoneX || isIPhoneXMax) ? 44 : 0) : 0;
       }
       case 'vertical':
       case 'top': {
         return statusBarHeight(isLandscape);
       }
       case 'bottom': {
-        return isIPhoneX ? (isLandscape ? 24 : 34) : 0;
+        return (isIPhoneX || isIPhoneXMax) ? (isLandscape ? 24 : 34) : 0;
       }
     }
   };
