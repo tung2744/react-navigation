@@ -8,6 +8,7 @@ import {
   SafeAreaView,
   StyleSheet,
   Animated,
+  View,
 } from 'react-native';
 import withOrientation from './withOrientation';
 
@@ -19,8 +20,11 @@ const X_MAX_WIDTH = 414;
 const X_MAX_HEIGHT = 896;
 const PAD_WIDTH = 768;
 const PAD_HEIGHT = 1024;
+const IPAD_PRO_3RD_WIDTH = 1366;
+const IPAD_PRO_3RD_HEIGHT = 1024;
 
 const { height: D_HEIGHT, width: D_WIDTH } = Dimensions.get('window');
+
 
 const { PlatformConstants = {} } = NativeModules;
 const { minor = 0 } = PlatformConstants.reactNativeVersion || {};
@@ -49,6 +53,17 @@ const isIPhoneXMax = (() => {
   );
 })();
 
+const isIPadPro3rd = (() => {
+  if (Platform.OS === 'web') return false;
+
+  return (
+    Platform.OS === 'ios' &&
+    ((D_HEIGHT === IPAD_PRO_3RD_HEIGHT && D_WIDTH === IPAD_PRO_3RD_WIDTH) ||
+      (D_HEIGHT === IPAD_PRO_3RD_WIDTH && D_WIDTH === IPAD_PRO_3RD_HEIGHT))
+  );
+})();
+
+
 const isIPad = (() => {
   if (Platform.OS !== 'ios' || isIPhoneX || isIPhoneXMax) return false;
 
@@ -62,6 +77,8 @@ const isIPad = (() => {
     return false;
   }
 
+  if (isIPadPro3rd) return false;
+
   return true;
 })();
 
@@ -70,7 +87,7 @@ const statusBarHeight = isLandscape => {
     return isLandscape ? 0 : 44;
   }
 
-  if (isIPad) {
+  if (isIPad || isIPadPro3rd) {
     return 20;
   }
 
@@ -118,7 +135,7 @@ class SafeView extends Component {
     }
 
     const safeAreaStyle = this._getSafeAreaStyle();
-
+  
     return (
       <Animated.View
         ref={c => (this.view = c)}
@@ -140,12 +157,13 @@ class SafeView extends Component {
       return;
     }
 
-    const WIDTH = isLandscape ? X_HEIGHT : X_WIDTH;
-    const HEIGHT = isLandscape ? X_WIDTH : X_HEIGHT;
+    const HEIGHT = Dimensions.get('screen').height;
+    const WIDTH = Dimensions.get('screen').width;
 
     this.view._component.measureInWindow((winX, winY, winWidth, winHeight) => {
       let realY = winY;
       let realX = winX;
+
 
       if (realY >= HEIGHT) {
         realY = realY % HEIGHT;
@@ -302,7 +320,11 @@ class SafeView extends Component {
         return statusBarHeight(isLandscape);
       }
       case 'bottom': {
-        return (isIPhoneX || isIPhoneXMax) ? (isLandscape ? 24 : 34) : 0;
+        return (
+          isIPhoneX ||
+          isIPhoneXMax ||
+          isIPadPro3rd
+        ) ? (isLandscape ? 24 : 34) : 0;
       }
     }
   };
